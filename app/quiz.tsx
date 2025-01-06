@@ -8,6 +8,7 @@ import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
 import { QuizTimer } from "@/components/QuizTimer";
 import Feather from "@expo/vector-icons/Feather";
+import { Button } from "react-native-paper";
 
 export default function QuizScreen() {
   const [quizState, setQuizState] = useState<"running" | "finished">("running");
@@ -47,17 +48,21 @@ export default function QuizScreen() {
             ),
           headerRight(props) {
             return quizState === "finished" ? (
-              <Feather.Button
+              <Button
                 onPress={() => {
                   setQuizState("running");
                   updateRandomQuestions();
                 }}
-                aria-label="Restart Quiz"
-                name="refresh-ccw"
-                backgroundColor="transparent"
-                color={props.tintColor}
-                size={20}
-              />
+                accessibilityLabel="Սկսել նոր քննություն"
+              >
+                <Feather
+                  aria-label="Սկսել նոր քննություն"
+                  name="refresh-ccw"
+                  backgroundColor="transparent"
+                  color={props.tintColor}
+                  size={20}
+                />
+              </Button>
             ) : null;
           },
         }}

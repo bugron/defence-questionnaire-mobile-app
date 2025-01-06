@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useContext, useState } from "react";
-import { TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { Quiz } from "@/components/Quiz";
 import { DocumentContext } from "@/components/DocumentContext";
 import { QuestionWithCorrectAnswer } from "@/utils/fetchQuestions";
@@ -36,18 +36,22 @@ export default function ViewQuestionsScreen() {
           headerTitle: `Հարցաշար (${questionDocument.questions.length} հարց)`,
           headerRight(props) {
             return (
-              <Feather.Button
-                aria-label="External Link"
-                name="external-link"
-                backgroundColor="transparent"
-                color={props.tintColor}
-                size={20}
+              <Button
                 onPress={() =>
                   WebBrowser.openBrowserAsync(
                     questionDocument.originalDocumentURL
                   )
                 }
-              />
+                accessibilityLabel="Բացել հարցաշարի աղբյուրը"
+              >
+                <Feather
+                  aria-label="Բացել հարցաշարի աղբյուրը"
+                  name="external-link"
+                  backgroundColor="transparent"
+                  color={props.tintColor}
+                  size={20}
+                />
+              </Button>
             );
           },
         }}

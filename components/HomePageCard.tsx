@@ -1,5 +1,4 @@
 import { Card, Text } from "react-native-paper";
-import { StyleSheet } from "react-native";
 
 export const HomePageCard = ({
   title,
@@ -17,17 +16,9 @@ export const HomePageCard = ({
       width: "100%",
     }}
   >
+    <Card.Title title={title} titleVariant="titleLarge" />
     <Card.Content>
-      <Text variant="titleLarge" style={styles.cardTitle}>
-        {title}
-      </Text>
       <Text variant="bodyMedium">{description}</Text>
     </Card.Content>
   </Card>
 );
-
-const styles = StyleSheet.create({
-  cardTitle: {
-    marginBottom: 8,
-  },
-});
