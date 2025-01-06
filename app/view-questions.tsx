@@ -41,6 +41,7 @@ export default function ViewQuestionsScreen() {
                 name="external-link"
                 backgroundColor="transparent"
                 color={props.tintColor}
+                size={20}
                 onPress={() =>
                   WebBrowser.openBrowserAsync(
                     questionDocument.originalDocumentURL

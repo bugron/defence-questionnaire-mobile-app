@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
 
 import { View } from "@/components/Themed";
 import { Question } from "@/components/Question";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, Button, ProgressBar, useTheme } from "react-native-paper";
 import { QuestionWithCorrectAnswer } from "@/utils/fetchQuestions";
 import { getCorrectAnswers } from "@/utils/getCorrectAnswers";
@@ -12,10 +12,14 @@ export function Quiz({
   questions,
   displayAnswers: displayAnswersProp,
   enableSubmit = true,
+  handleTimeUp,
+  quizState,
 }: {
   questions: QuestionWithCorrectAnswer[];
   displayAnswers?: boolean;
   enableSubmit?: boolean;
+  handleTimeUp?: () => void;
+  quizState?: "running" | "finished";
 }) {
   const theme = useTheme();
   const [displayAnswers, setDisplayAnswers] = useState(displayAnswersProp);
@@ -26,6 +30,15 @@ export function Quiz({
   const correctAnswers = getCorrectAnswers(questions, selectedQuestions);
   const passedQuizThreshold = correctAnswers.length / 10 >= TEST_THRESHOLD;
   const progress = selectedQuestions.size / 10;
+
+  useEffect(() => {
+    if (quizState === "finished") {
+      setDisplayAnswers(true);
+    } else if (quizState === "running") {
+      setDisplayAnswers(false);
+      setSelectedQuestions(new Map());
+    }
+  }, [quizState]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -59,7 +72,10 @@ export function Quiz({
           <Button
             disabled={progress < 1}
             mode="contained"
-            onPress={() => setDisplayAnswers(true)}
+            onPress={() => {
+              setDisplayAnswers(true);
+              handleTimeUp?.();
+            }}
             style={styles.finishButton}
           >
             Տեսնել արդյունքները
