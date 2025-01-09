@@ -1,24 +1,22 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Switch } from "react-native-paper";
-import { Appearance, View } from "react-native";
+import { IconButton } from "react-native-paper";
+import { Appearance } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 export const ThemeSwitch = () => {
-  const colorScheme = useColorScheme();
+  const isDarkMode = useColorScheme() === "dark";
 
   return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Feather
-        name="moon"
-        size={24}
-        color={colorScheme === "dark" ? "white" : "black"}
-      />
-      <Switch
-        value={colorScheme === "dark"}
-        onValueChange={(value) =>
-          Appearance.setColorScheme(value ? "dark" : "light")
-        }
-      />
-    </View>
+    <IconButton
+      icon={() => (
+        <Feather
+          name={isDarkMode ? "moon" : "sun"}
+          size={24}
+          color={isDarkMode ? "white" : "black"}
+        />
+      )}
+      size={24}
+      onPress={() => Appearance.setColorScheme(isDarkMode ? "light" : "dark")}
+    />
   );
 };
