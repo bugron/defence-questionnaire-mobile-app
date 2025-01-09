@@ -8,7 +8,10 @@ import {
 import { Text, Button } from "react-native-paper";
 import { StyleSheet } from "react-native";
 
-import { QuestionDocument, fetchQuestions } from "@/utils/fetchQuestions";
+import {
+  QuestionDocument,
+  fetchAndStoreQuestions,
+} from "@/utils/fetchQuestions";
 import { useRequestState } from "@/hooks/useLoadingState";
 import { CenteredSafeAreaView } from "@/components/CenteredSafeAreaView";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -26,7 +29,7 @@ export const DocumentContextProvider: FC<PropsWithChildren> = ({
     setRequestState("loading");
 
     try {
-      const data = await fetchQuestions();
+      const data = await fetchAndStoreQuestions();
 
       setQuestionDocument(data);
       setRequestState("success");
