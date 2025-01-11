@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useContext, useState } from "react";
-import { Button, TextInput } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
 import { Quiz } from "@/components/Quiz";
 import { DocumentContext } from "@/components/DocumentContext";
 import { QuestionWithCorrectAnswer } from "@/utils/fetchQuestions";
@@ -10,8 +10,11 @@ import { filterQuestions } from "@/utils/filterQuestions";
 import { Stack } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import * as WebBrowser from "expo-web-browser";
+import { IconButton } from "react-native-paper";
+import { router } from "expo-router";
 
 export default function ViewQuestionsScreen() {
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const questionDocument = useContext(DocumentContext);
   const questions = questionDocument?.questions;
@@ -33,38 +36,100 @@ export default function ViewQuestionsScreen() {
       <Stack.Screen
         options={{
           headerBackTitleVisible: false,
-          headerTitle: `Հարցաշար (${questionDocument.questions.length} հարց)`,
-          headerRight(props) {
+          headerBackVisible: false,
+          headerTitleAlign: "left",
+          headerLeft: (props) => {
             return (
-              <Button
-                onPress={() =>
-                  WebBrowser.openBrowserAsync(
-                    questionDocument.originalDocumentURL
-                  )
-                }
-                accessibilityLabel="Բացել հարցաշարի աղբյուրը"
-              >
-                <Feather
-                  aria-label="Բացել հարցաշարի աղբյուրը"
-                  name="external-link"
-                  backgroundColor="transparent"
-                  color={props.tintColor}
-                  size={20}
-                />
-              </Button>
+              <IconButton
+                icon={() => (
+                  <Feather
+                    name="arrow-left"
+                    size={24}
+                    color={props.tintColor}
+                  />
+                )}
+                size={24}
+                onPress={() => {
+                  if (isSearchVisible) {
+                    setIsSearchVisible(false);
+                    setSearchQuery("");
+                  } else {
+                    router.replace("/");
+                  }
+                }}
+                style={{ marginRight: 8 }}
+              />
             );
+          },
+          headerTitle: () => {
+            if (isSearchVisible) {
+              return (
+                <Searchbar
+                  showDivider={false}
+                  placeholder="Փնտրել հարցաշարում"
+                  value={searchQuery}
+                  style={{
+                    flex: 1,
+                    marginRight: 32,
+                    height: 40,
+                  }}
+                  inputStyle={{
+                    top: -7,
+                    height: 40,
+                  }}
+                  onChangeText={setSearchQuery}
+                />
+              );
+            }
+
+            return (
+              <Text style={{ fontSize: 18 }}>
+                Հարցաշար ({questionDocument.questions.length} հարց)
+              </Text>
+            );
+          },
+          headerRight(props) {
+            return !isSearchVisible ? (
+              <View
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  gap: 0,
+                  flexDirection: "row",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <IconButton
+                  icon={() => (
+                    <Feather name="search" size={20} color={props.tintColor} />
+                  )}
+                  size={20}
+                  onPress={() => setIsSearchVisible(true)}
+                  style={{ margin: 0, marginRight: 8, padding: 0, gap: 0 }}
+                />
+                <IconButton
+                  icon={() => (
+                    <Feather
+                      aria-label="Բացել հարցաշարի աղբյուրը"
+                      name="external-link"
+                      backgroundColor="transparent"
+                      color={props.tintColor}
+                      size={20}
+                    />
+                  )}
+                  size={20}
+                  style={{ margin: 0, padding: 0, gap: 0 }}
+                  onPress={() =>
+                    WebBrowser.openBrowserAsync(
+                      questionDocument.originalDocumentURL
+                    )
+                  }
+                />
+              </View>
+            ) : null;
           },
         }}
       />
-      <View style={styles.searchInputContainer}>
-        <TextInput
-          mode="outlined"
-          dense
-          label="Փնտրել հարցաշարում"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
       {filteredQuestions.length > 0 ? (
         <Quiz
           questions={filteredQuestions}
