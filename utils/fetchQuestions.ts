@@ -21,24 +21,32 @@ export interface QuestionDocument {
 
 const QUESTIONS_KEY = "questions";
 
-export const fetchAndStoreQuestions = async (): Promise<QuestionDocument> => {
-  const response = await fetch(
-    "https://raw.githubusercontent.com/bugron/defense-questionnaire-mobile-app/main/assets/questionnaires/latest.json"
-  );
+const fetchFromStorage = async () => {
+  const value = await AsyncStorage.getItem(QUESTIONS_KEY);
 
-  if (!response.ok) {
-    const value = await AsyncStorage.getItem(QUESTIONS_KEY);
-
-    if (value !== null) {
-      return JSON.parse(value) as QuestionDocument;
-    }
-
-    throw new Error("Failed to fetch questions");
+  if (value) {
+    return JSON.parse(value) as QuestionDocument;
   }
 
-  const questions = (await response.json()) as QuestionDocument;
+  throw new Error("Failed to fetch questions");
+};
 
-  await AsyncStorage.setItem(QUESTIONS_KEY, JSON.stringify(questions));
+export const fetchAndStoreQuestions = async (): Promise<QuestionDocument> => {
+  try {
+    const response = await fetch(
+      "https://raw.githubusercontent.com/bugron/defense-questionnaire-mobile-app/main/assets/questionnaires/latest.json"
+    );
 
-  return questions;
+    if (!response.ok) {
+      return fetchFromStorage();
+    }
+
+    const questions = (await response.json()) as QuestionDocument;
+
+    await AsyncStorage.setItem(QUESTIONS_KEY, JSON.stringify(questions));
+
+    return questions;
+  } catch {
+    return fetchFromStorage();
+  }
 };
