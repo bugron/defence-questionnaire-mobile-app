@@ -54,7 +54,7 @@ export default function ViewQuestionsScreen() {
                     setIsSearchVisible(false);
                     setSearchQuery("");
                   } else {
-                    router.replace("/");
+                    router.back();
                   }
                 }}
                 style={{ marginRight: 8 }}
