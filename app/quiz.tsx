@@ -5,10 +5,10 @@ import { randomizeQuestions } from "@/utils/questionRandomizer";
 import { Quiz } from "@/components/Quiz";
 import { DocumentContext } from "@/components/DocumentContext";
 import { Text } from "@/components/Themed";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { QuizTimer } from "@/components/QuizTimer";
 import Feather from "@expo/vector-icons/Feather";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 
 export default function QuizScreen() {
   const [quizState, setQuizState] = useState<"running" | "finished">("running");
@@ -35,6 +35,23 @@ export default function QuizScreen() {
       <Stack.Screen
         options={{
           headerBackTitleVisible: false,
+          headerBackVisible: false,
+          headerTitleAlign: "left",
+          headerLeft: (props) => {
+            return (
+              <IconButton
+                icon={() => (
+                  <Feather
+                    name="arrow-left"
+                    size={24}
+                    color={props.tintColor}
+                  />
+                )}
+                size={24}
+                onPress={() => router.back()}
+              />
+            );
+          },
           headerTitle: () =>
             quizState === "running" ? (
               <QuizTimer
