@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, Platform } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useContext, useState } from "react";
@@ -70,7 +70,7 @@ export default function ViewQuestionsScreen() {
                   value={searchQuery}
                   style={{
                     flex: 1,
-                    marginRight: 32,
+                    marginRight: Platform.OS === "ios" ? 92 : 32,
                     height: 40,
                   }}
                   inputStyle={{
